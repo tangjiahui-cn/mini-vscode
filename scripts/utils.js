@@ -21,7 +21,7 @@ module.exports.CMD = (function () {
     if (typeof cmd !== "string") return;
     cmd = cmd.split(" ");
     // win运行spawn报错问题 （https://juejin.cn/post/6844904022059515918）
-    const child = spawn(...[cmd[0], cmd.slice(1)], {
+    const child = spawn(cmd[0], cmd.slice(1), {
       shell: process.platform === 'win32'
     });
     child.addListener("exit", killAll);
