@@ -1,0 +1,35 @@
+.page {
+  display: flex;
+  align-items: self-start;
+  height: 200px;
+
+  &-left {
+    padding-right: 16px;
+    height: 100%;
+    overflow: auto;
+  }
+
+  &-right {
+    flex: 1;
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+.item {
+  padding: 4px 8px;
+  cursor: pointer;
+  border: 1px solid #e8e8e8;
+  transition: background-color 0.3s;
+  background-color: #f9f9f9;
+
+  &:hover,
+  &-choose {
+    border: 1px solid rgb(0, 0, 255);
+    background-color: rgba(0, 0, 255, 0.05);
+  }
+
+  & + & {
+    margin-top: 8px;
+  }
+}

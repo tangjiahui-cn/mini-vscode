@@ -1,16 +1,42 @@
 {
-  "name": "demo",
-  "version": "1.0.0",
-  "description": "zzz",
-  "main": "src/main.js",
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "main": "electron/main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node ./scripts/server",
+    "build": "vite build && electron-forge make",
+    "preview": "vite build && electron ."
   },
-  "keywords": [],
-  "author": "zz",
-  "license": "ISC",
+  "dependencies": {
+    "antd": "4.21.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.2"
+  },
   "devDependencies": {
-    "electron": "^25.4.0"
+    "@electron-forge/cli": "^6.2.1",
+    "@electron-forge/maker-deb": "^6.2.1",
+    "@electron-forge/maker-rpm": "^6.2.1",
+    "@electron-forge/maker-squirrel": "^6.2.1",
+    "@electron-forge/maker-zip": "^6.2.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
+    "@types/axios": "^0.14.0",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "axios": "^1.4.0",
+    "classnames": "^2.3.2",
+    "cross-env": "^7.0.3",
+    "electron": "^25.4.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "less": "^4.2.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
   }
 }
