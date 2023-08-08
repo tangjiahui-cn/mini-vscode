@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "main": "electron/main.js",
+  "authors": "TangJiaHui",
+  "description": "A demo For electron, vite, react",
   "scripts": {
     "dev": "node ./scripts/server",
     "build": "vite build && electron-forge make",

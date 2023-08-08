@@ -1,4 +1,4 @@
-# Electron + Vite + React-Router
+# Electron + Vite + React + React-Router + Less
 
 一个示例项目。支持本地开发模式、打包模式。并且实现了路由切换，文件上传/保存，接口请求等功能。
 
