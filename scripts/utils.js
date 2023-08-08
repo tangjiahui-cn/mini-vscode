@@ -1,4 +1,5 @@
 const { spawn } = require("node:child_process");
+const kill = require('tree-kill')
 
 // 管理所有子进程
 module.exports.CMD = (function () {
@@ -6,7 +7,7 @@ module.exports.CMD = (function () {
 
   // 杀死所有子进程
   function killAll() {
-    processList.forEach((x) => x?.kill?.());
+    processList.forEach((x) => kill(x.pid));
     processList = [];
   }
 
