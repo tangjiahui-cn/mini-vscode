@@ -87,11 +87,11 @@ export default function WorkSpace(props: IProps) {
   }
 
   useEffect(() => {
-    loadDirectory("/Users/tangjiahui/Desktop/electron").then(setTreeData);
-    setFileInfo({
-      fileName: "electron",
-      filePath: "/Users/tangjiahui/Desktop/electron",
-    });
+    // loadDirectory("/Users/tangjiahui/Desktop/electron").then(setTreeData);
+    // setFileInfo({
+    //   fileName: "electron",
+    //   filePath: "/Users/tangjiahui/Desktop/electron",
+    // });
   }, []);
 
   return (

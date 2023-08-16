@@ -3,6 +3,8 @@ const path = require("path");
 const fs = require("fs");
 const root = (_path) => path.join(__dirname, "..", _path);
 
+Menu.setApplicationMenu(null);
+
 // 是否本地开发模式
 const __DEV__ = process.env.mode === "development";
 const LOCAL_URL = "http://localhost:5173/";
