@@ -1,18 +1,22 @@
 import styles from "./index.module.less";
 import { Button, Space, Tree } from "antd";
-import { DownOutlined, RightOutlined, FolderOpenOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  RightOutlined,
+  FolderOpenOutlined,
+} from "@ant-design/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { appendChildren } from "./treeUtils";
-import {operateActions, useAppDispatch} from "../../store";
+import { operateActions, useAppDispatch } from "../../store";
 
 function getFileNameFormPath(filePath: string): string {
-  const lastIndex = filePath.lastIndexOf("/") + 1;
-  return filePath.slice(lastIndex);
+  const lastIndex = filePath.includes("/")
+    ? filePath.lastIndexOf("/")
+    : filePath.lastIndexOf("\\");
+  return filePath.slice(lastIndex + 1);
 }
 
-interface IProps {
-
-}
+interface IProps {}
 
 export default function WorkSpace(props: IProps) {
   const dispatch = useAppDispatch();
@@ -31,14 +35,16 @@ export default function WorkSpace(props: IProps) {
 
   const isEmpty = useMemo(() => !treeData?.length, [treeData]);
 
-  function handleSelectFile (filePath: string) {
-    window.file.getFileContent(filePath).then(content => {
-      dispatch(operateActions.setBody({
-        fileName: getFileNameFormPath(filePath),
-        filePath,
-        content,
-      }))
-    })
+  function handleSelectFile(filePath: string) {
+    window.file.getFileContent(filePath).then((content) => {
+      dispatch(
+        operateActions.setBody({
+          fileName: getFileNameFormPath(filePath),
+          filePath,
+          content,
+        })
+      );
+    });
   }
 
   function handleOpenDirectory() {
@@ -72,13 +78,16 @@ export default function WorkSpace(props: IProps) {
             selectable: x?.isFile,
             filePath: x?.filePath,
             title: (
-              <div className={styles["tree-title"]}
-                   draggable={x.isFile && !x.fileName.startsWith('.')}
-                   onDragStart={(e) => {
-                     e.preventDefault();
-                     window.electron.startDrag(x?.filePath);
-                   }}
-              >{x.fileName}</div>
+              <div
+                className={styles["tree-title"]}
+                draggable={x.isFile && !x.fileName.startsWith(".")}
+                onDragStart={(e) => {
+                  e.preventDefault();
+                  window.electron.startDrag(x?.filePath);
+                }}
+              >
+                {x.fileName}
+              </div>
             ),
           };
         })
@@ -106,7 +115,10 @@ export default function WorkSpace(props: IProps) {
           {expand ? <DownOutlined /> : <RightOutlined />}
           {isEmpty ? "无打开的文件夹" : fileInfo?.fileName}
         </Space>
-        <FolderOpenOutlined style={{fontSize: 15}} onClick={handleOpenDirectory}/>
+        <FolderOpenOutlined
+          style={{ fontSize: 15 }}
+          onClick={handleOpenDirectory}
+        />
       </div>
 
       <div style={{ display: expand ? "block" : "none" }}>
@@ -118,14 +130,14 @@ export default function WorkSpace(props: IProps) {
           </div>
         )}
         <Tree
-            style={{paddingLeft: 16}}
-            treeData={treeData}
-            loadData={handleLoadTreeData}
-            onSelect={([filePath = ''] : string[] = []) => {
-              if (filePath) {
-                handleSelectFile (filePath)
-              }
-            }}
+          style={{ paddingLeft: 16 }}
+          treeData={treeData}
+          loadData={handleLoadTreeData}
+          onSelect={([filePath = ""]: string[] = []) => {
+            if (filePath) {
+              handleSelectFile(filePath);
+            }
+          }}
         />
       </div>
     </div>
