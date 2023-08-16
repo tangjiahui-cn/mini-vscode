@@ -1,26 +1,19 @@
 .page {
-  background: #ececec;
+  position: absolute;
   left: 0;
   top: 0;
-  height: 100%;
   width: 100%;
-  overflow-y: auto;
-  position: absolute;
+  display: flex;
+  height: 100%;
 
-  &-url {
-    padding: 2px 8px;
-    background: white;
+  &-left {
+    width: 250px;
+    flex: 0 0 250px;
+    background-color: rgb(37, 37, 38);
   }
 
-  &-body {
-    margin: 16px;
-    background: white;
-    padding: 16px;
-  }
-
-  &-display {
-    border: 1px solid #e8e8e8;
-    padding: 16px;
-    min-height: 200px;
+  &-right {
+    flex: 1;
+    background-color: rgb(30, 30, 30);
   }
 }

@@ -9,14 +9,26 @@ exposeWindow({
     chrome: process.versions.chrome,
   },
   electron: {
-    startDrag () {
-      ipcRenderer.send('save-local')
+    startDrag (filePath) {
+      ipcRenderer.send('save-local', filePath)
     },
   },
-  node: {
+  file: {
     // 获取根目录文件内容
-    getFileContent (fileName) {
-      return ipcRenderer.invoke('node:getFilesInRoot', fileName)
+    getFileContent (filePath) {
+      return ipcRenderer.invoke('node:getFileContent', filePath)
+    },
+    // 选择本地目录打开
+    chooseLocalDirectory () {
+      return ipcRenderer.invoke('file.chooseLocalDirectory')
+    },
+    // 获取目录下的所有文件
+    getFiles (filePath) {
+      return ipcRenderer.invoke('file:getFiles', filePath)
+    },
+    // 保存文件到本地
+    saveFileToLocal ({filePath, content}) {
+      return ipcRenderer.invoke('file:saveFileToLocal', {filePath, content})
     }
   }
 });

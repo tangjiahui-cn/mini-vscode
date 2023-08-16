@@ -4,9 +4,12 @@ declare interface Window {
     chrome: string;
   };
   electron: {
-    startDrag: (fileName: string) => void;
+    startDrag: (filePath: string) => void;
   },
-  node: {
-    getFileContent: (fileName: string) => Promise<any>;
+  file: {
+    getFileContent: (filePath: string) => Promise<string>;
+    chooseLocalDirectory: () => Promise<any>;
+    getFiles: (filePath: string) => Promise<any[]>;
+    saveFileToLocal: (info: {filePath: string, content: string}) => Promise<boolean>;
   }
 }
