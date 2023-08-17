@@ -6,6 +6,8 @@ import {
   FolderOpenOutlined,
   FileTextOutlined,
   FolderOutlined,
+  FileAddOutlined,
+  FolderAddOutlined
 } from "@ant-design/icons";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {appendChildren, deleteTreeNode, getTreeNode, insertNode} from "./treeUtils";
@@ -13,7 +15,16 @@ import { operateActions, useAppDispatch } from "../../store";
 import TreeItem from "./components/TreeItem";
 import EditItem from "./components/EditItem";
 import TipDialog from "../../common/TipDialog";
-``
+
+// 按目录到文件排列（按英文文件名）
+export function sortChildren (children: any[]) {
+  return children.sort((x, y) => {
+    if (x.isLeaf && y.isDirectory) return 1;
+    if (x.isDirectory && y.isLeaf) return -1;
+    return x._title.localeCompare(y._title);
+  });
+}
+
 function getFileNameFormPath(filePath: string): string {
   const lastIndex = filePath.includes("/")
     ? filePath.lastIndexOf("/")
@@ -37,6 +48,7 @@ export default function WorkSpace() {
   const dispatch = useAppDispatch();
   const [expand, setExpand] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<any[]>([]);
+  const [currentTreeNode, setCurrentTreeNode] = useState<any>(undefined);
   const treeDataRef = useRef(treeData);
   treeDataRef.current = treeData;
 
@@ -63,16 +75,34 @@ export default function WorkSpace() {
   }
 
   function loadDirectory (filePath: string) {
-    const fileName = getFileNameFormPath(filePath);
-    getTreeData(filePath).then(setTreeData);
-    setFileInfo({
-      filePath,
-      fileName,
-    });
+    window.file.getBaseInfo(filePath).then(fileInfo => {
+      const treeNode = createNode(fileInfo);
+      setCurrentTreeNode(treeNode);
+      getTreeData(filePath).then(setTreeData);
+      setFileInfo(fileInfo);
+    })
   }
 
   function handleOpenDirectory() {
     window.file.chooseLocalDirectory().then(loadDirectory);
+  }
+
+  function handleCreateFile () {
+    const node = currentTreeNode;
+    window.file.createFile(node.isDirectory ? node.filePath : node._dirPath).then(file => {
+      const targetTreeData = [...treeData];
+      targetTreeData.push(createNode(file))
+      setTreeData(sortChildren(targetTreeData))
+    })
+  }
+
+  function handleCreateDirectory () {
+    const node = currentTreeNode;
+    window.file.createDirectory(node.isDirectory ? node.filePath : node._dirPath).then(file => {
+      const targetTreeData = [...treeData];
+      targetTreeData.push(createNode(file))
+      setTreeData(sortChildren(targetTreeData))
+    })
   }
 
   function handleLoadTreeData(treeNode) {
@@ -126,9 +156,7 @@ export default function WorkSpace() {
 
   function getTreeData(filePath: string) {
     return window.file.getFiles(filePath).then((files) => {
-      return files
-        .map(createNode)
-        .sort((x) => (x.isLeaf ? 1 : -1));
+      return sortChildren(files.map(createNode))
     });
   }
 
@@ -200,6 +228,8 @@ export default function WorkSpace() {
           {isEmpty ? "无打开的文件夹" : fileInfo?.fileName}
         </Space>
         <Space style={{ fontSize: 15 }}>
+          <FileAddOutlined title={'新增文件'} style={{fontSize: 13}} onClick={handleCreateFile}/>
+          <FolderAddOutlined title={'新增目录'} onClick={handleCreateDirectory}/>
           <FolderOpenOutlined
             title={'打开文件夹'}
             onClick={handleOpenDirectory}

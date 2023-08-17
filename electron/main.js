@@ -190,3 +190,24 @@ ipcMain.handle('file:createDirectory', (_, {parentDir, dirName}) => {
   return createDir(parentDir, dirName);
 })
 
+// 获取基本文件信息
+ipcMain.handle('file:baseInfo', (_, filePath) => {
+  return new Promise(resolve => {
+    if (!fs.existsSync(filePath)) {
+      return resolve({
+        fileName: '',
+        filePath: '',
+        isDirectory: false,
+        isFile: false
+      })
+    }
+    const isDirectory = fs.statSync(filePath).isDirectory()
+    const info = path.parse(filePath);
+    return resolve({
+      fileName: info.base,
+      filePath: filePath,
+      isDirectory,
+      isFile: !isDirectory
+    })
+  })
+})

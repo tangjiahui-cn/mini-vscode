@@ -7,6 +7,7 @@ declare interface Window {
     startDrag: (filePath: string) => void;
   },
   file: {
+    getBaseInfo: (filePath: string) => Promise<any>;
     createDirectory: (parentDir: string, dirName?: string) => Promise<any>;
     createFile: (dirname: string, fileName?: string) => Promise<any>;
     deleteFilePath: (filePath: string) => Promise<boolean>;

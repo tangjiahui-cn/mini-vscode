@@ -14,6 +14,10 @@ exposeWindow({
     },
   },
   file: {
+    // 获取文件/目录基本信息
+    getBaseInfo (filePath) {
+      return ipcRenderer.invoke('file:baseInfo', filePath);
+    },
     // 创建新的文件夹
     createDirectory (parentDir, dirName) {
       return ipcRenderer.invoke('file:createDirectory', {parentDir, dirName})

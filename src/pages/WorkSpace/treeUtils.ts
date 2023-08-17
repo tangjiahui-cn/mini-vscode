@@ -1,6 +1,7 @@
 /**
  * 操作TreeData的方法
  */
+import {sortChildren} from "./index";
 
 // 删除treeData中的一个节点
 export function deleteTreeNode (treeData: any[] = [], key: string = '') {
@@ -84,7 +85,7 @@ export function insertNode (treeData: any[] = [], key = '', node: any) {
     if (o?.key === key) {
       if (o.children) {
         o.children.push(node)
-        o.children = o.children.sort((x) => (x.isLeaf ? 1 : -1));
+        o.children = sortChildren(o.children);
       }
       else o.children = [node]
       o.isLeaf = false
