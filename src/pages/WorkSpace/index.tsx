@@ -48,7 +48,7 @@ export default function WorkSpace() {
   const dispatch = useAppDispatch();
   const [expand, setExpand] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<any[]>([]);
-  const [currentTreeNode, setCurrentTreeNode] = useState<any>(undefined);
+  const [currentFile, setCurrentFile] = useState<any>(undefined);
   const treeDataRef = useRef(treeData);
   treeDataRef.current = treeData;
 
@@ -76,8 +76,8 @@ export default function WorkSpace() {
 
   function loadDirectory (filePath: string) {
     window.file.getBaseInfo(filePath).then(fileInfo => {
-      const treeNode = createNode(fileInfo);
-      setCurrentTreeNode(treeNode);
+      const treeNode = createNode(fileInfo, true);
+      setCurrentFile(treeNode);
       getTreeData(filePath).then(setTreeData);
       setFileInfo(fileInfo);
     })
@@ -88,21 +88,30 @@ export default function WorkSpace() {
   }
 
   function handleCreateFile () {
-    const node = currentTreeNode;
-    window.file.createFile(node.isDirectory ? node.filePath : node._dirPath).then(file => {
-      const targetTreeData = [...treeData];
-      targetTreeData.push(createNode(file))
-      setTreeData(sortChildren(targetTreeData))
-    })
+    const node = currentFile;
+    if (node?._root) {
+      // 根目录下添加
+      window.file.createFile(node.isDirectory ? node.filePath : node._dirPath).then(file => {
+        const targetTreeData = [...treeData];
+        targetTreeData.push(createNode(file))
+        setTreeData(sortChildren(targetTreeData))
+      })
+    } else {
+      handleOpt(node, {label: '新增文件', value: '1'})
+    }
   }
 
   function handleCreateDirectory () {
-    const node = currentTreeNode;
-    window.file.createDirectory(node.isDirectory ? node.filePath : node._dirPath).then(file => {
-      const targetTreeData = [...treeData];
-      targetTreeData.push(createNode(file))
-      setTreeData(sortChildren(targetTreeData))
-    })
+    const node = currentFile;
+    if (node?._root) {
+      window.file.createDirectory(node.isDirectory ? node.filePath : node._dirPath).then(file => {
+        const targetTreeData = [...treeData];
+        targetTreeData.push(createNode(file))
+        setTreeData(sortChildren(targetTreeData))
+      })
+    } else {
+      handleOpt(node, {label: '新增文件夹', value: '2'})
+    }
   }
 
   function handleLoadTreeData(treeNode) {
@@ -125,7 +134,7 @@ export default function WorkSpace() {
     )
   }
 
-  function createNode (x: any) {
+  function createNode (x: any, root?: boolean) {
     const treeNode: any = {
       key: x?.filePath,
       isLeaf: x?.isFile,
@@ -137,6 +146,7 @@ export default function WorkSpace() {
       isDirectory: x?.isDirectory,
       isFile: x?.isFile
     }
+    treeNode._root = root; // 根目录
     treeNode._data = x;
     treeNode._dirPath = getDirectoryFromPath(x?.filePath)
     treeNode._query = false;
@@ -156,12 +166,12 @@ export default function WorkSpace() {
 
   function getTreeData(filePath: string) {
     return window.file.getFiles(filePath).then((files) => {
-      return sortChildren(files.map(createNode))
+      return sortChildren(files.map(x => createNode(x)))
     });
   }
 
   function renameFile (srcPath, targetPath) {
-    window.file.rename(srcPath, targetPath).then(console.log);
+    window.file.rename(srcPath, targetPath);
   }
 
   function handleOpt (node, option) {
@@ -254,8 +264,12 @@ export default function WorkSpace() {
           treeData={treeData}
           loadData={handleLoadTreeData}
           onSelect={([filePath = ""]: string[] = [], {node}) => {
-            if (filePath && node?._isFile) {
-              handleSelectFile(filePath);
+            if (filePath) {
+              setCurrentFile(node);
+
+              if (filePath && node?._isFile) {
+                handleSelectFile(filePath);
+              }
             }
           }}
         />
