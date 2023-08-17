@@ -221,9 +221,9 @@ export default function WorkSpace() {
     }
   }
 
-  useEffect(() => {
-    loadDirectory("/Users/tangjiahui/Desktop/test-electron")
-  }, []);
+  // useEffect(() => {
+  //   loadDirectory("/Users/tangjiahui/Desktop/test-electron")
+  // }, []);
 
   return (
     <div className={styles.page}>
