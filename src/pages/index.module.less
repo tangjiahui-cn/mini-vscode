@@ -5,15 +5,56 @@
   width: 100%;
   display: flex;
   height: 100%;
+  flex-direction: column;
+  color: rgba(197, 197, 197);
 
-  &-left {
-    width: 250px;
-    flex: 0 0 250px;
-    background-color: rgb(37, 37, 38);
+  &-head {
+    -webkit-app-region: drag;
+    height: 32px;
+    background-color: rgb(52, 52, 52);
+    border-bottom: 1px solid rgb(40, 40, 40);
+    justify-content: space-between;
+    display: flex;
+
+    &-item {
+      width: 48px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 32px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
   }
 
-  &-right {
+  &-body {
     flex: 1;
-    background-color: rgb(30, 30, 30);
+    display: flex;
+
+    &-left {
+      width: 250px;
+      flex: 0 0 250px;
+      background-color: rgb(37, 37, 38);
+    }
+
+    &-right {
+      flex: 1;
+      background-color: rgb(30, 30, 30);
+    }
   }
 }
+
+.no-drag {
+  -webkit-app-region: none;
+}
+
+.logo {
+ line-height: 32px;
+ padding: 0 8px;
+ color: rgba(255, 255, 255, 0.4);
+}
+

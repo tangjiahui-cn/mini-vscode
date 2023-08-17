@@ -13,6 +13,16 @@ exposeWindow({
       ipcRenderer.send('save-local', filePath)
     },
   },
+  client: {
+    // 关闭窗口
+    closeWindow: () => ipcRenderer.send('client:closeWindow'),
+    // 最大化窗口
+    maxWindow: () => ipcRenderer.send('client:maxWindow'),
+    // 最小化窗口
+    minWindow: () => ipcRenderer.send('client:minWindow'),
+    // 重置窗口
+    resetWindow: () => ipcRenderer.send('client:resetWindow')
+  },
   file: {
     // 获取文件/目录基本信息
     getBaseInfo (filePath) {

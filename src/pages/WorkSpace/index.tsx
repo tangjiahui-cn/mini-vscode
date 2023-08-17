@@ -85,7 +85,9 @@ export default function WorkSpace() {
   }
 
   function handleOpenDirectory() {
-    window.file.chooseLocalDirectory().then(loadDirectory);
+    window.file.chooseLocalDirectory().then(filePath => {
+      filePath && loadDirectory(filePath)
+    });
   }
 
   function handleCreateFile () {

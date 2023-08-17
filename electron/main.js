@@ -13,6 +13,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 600,
+    frame: false,
     webPreferences: {
       preload: root("electron/preload.js"),
     },
@@ -23,10 +24,12 @@ function createWindow() {
   } else {
     win.loadFile(root("dist/index.html"));
   }
+  return win;
 }
 
+let win;
 app.whenReady().then(() => {
-  createWindow();
+  win = createWindow();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -34,6 +37,28 @@ app.whenReady().then(() => {
     }
   });
 });
+
+// 关闭客户端
+ipcMain.on("client:closeWindow", () => {
+  win && win.close();
+  win = null;
+  app.quit();
+});
+
+// 客户端最大化
+ipcMain.on("client:maxWindow", () => {
+  win && win.maximize();
+});
+
+// 客户端最小化
+ipcMain.on("client:minWindow", () => {
+  win && win.minimize();
+});
+
+// 回复客户端大小
+ipcMain.on("client:resetWindow", () => {
+  win && win.restore();
+})
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -45,19 +70,18 @@ app.on("window-all-closed", () => {
 ipcMain.on("save-local", (event, filePath) => {
   event.sender.startDrag({
     icon: path.join(__dirname, "iconForDragAndDrop.png"),
-    file: filePath
+    file: filePath,
   });
   return true;
 });
 
-
 // 获取文件内容
 ipcMain.handle("node:getFileContent", (event, filePath) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     fs.readFile(filePath, (_, content) => {
-      return resolve(`${content}`)
-    })
-  })
+      return resolve(`${content}`);
+    });
+  });
 });
 
 // 打开文件选择对话框
@@ -73,44 +97,44 @@ ipcMain.handle("file.chooseLocalDirectory", () => {
 
 // 读取目录下所有文件
 ipcMain.handle("file:getFiles", (_, dirPath) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     fs.readdir(dirPath, (_, fileNameList) => {
-      const files = fileNameList.map(fileName => {
+      const files = fileNameList.map((fileName) => {
         const filePath = path.resolve(dirPath, fileName);
-        const isDirectory = fs.statSync(filePath).isDirectory()
+        const isDirectory = fs.statSync(filePath).isDirectory();
         return {
           fileName,
           filePath,
           isDirectory,
           isFile: !isDirectory,
-        }
+        };
       });
-      return resolve(files)
-    })
-  })
-})
+      return resolve(files);
+    });
+  });
+});
 
 // 保存文件到本地
-ipcMain.handle('file:saveFileToLocal', (_, {filePath, content}) => {
-  return new Promise(resolve => {
+ipcMain.handle("file:saveFileToLocal", (_, { filePath, content }) => {
+  return new Promise((resolve) => {
     fs.writeFile(filePath, content, (err) => {
-      resolve(!err)
-    })
-  })
-})
+      resolve(!err);
+    });
+  });
+});
 
 // 文件重命名
-ipcMain.handle('file:rename', (_, {srcPath, targetPath}) => {
+ipcMain.handle("file:rename", (_, { srcPath, targetPath }) => {
   return new Promise((resolve) => {
     fs.rename(srcPath, targetPath, (error) => {
       resolve(!error);
     });
   });
-})
+});
 
 // 删除指定路径文件
-ipcMain.handle('file:deletePath', (_, filePath) => {
-  function deleteFilePathSync (filePath) {
+ipcMain.handle("file:deletePath", (_, filePath) => {
+  function deleteFilePathSync(filePath) {
     if (fs.existsSync(filePath)) {
       const isFile = fs.statSync(filePath).isFile();
 
@@ -130,84 +154,90 @@ ipcMain.handle('file:deletePath', (_, filePath) => {
     }
   }
 
-  deleteFilePathSync(filePath)
+  deleteFilePathSync(filePath);
   return Promise.resolve(true);
-})
+});
 
 // 新增文件
-ipcMain.handle('file:createFile', (_, {dirname, fileName}) => {
+ipcMain.handle("file:createFile", (_, { dirname, fileName }) => {
   function createFile(dirname, fileName) {
     fileName ||= "未命名文件.txt";
     return new Promise((resolve) => {
       let index = 1;
-      let filePath = path.resolve(dirname, fileName)
+      let filePath = path.resolve(dirname, fileName);
       let currentName = fileName;
-      const [name, ext] = fileName.split('.');
+      const [name, ext] = fileName.split(".");
       // 如果文件存在
       while (fs.existsSync(filePath)) {
-        filePath = path.resolve(dirname, currentName = `${name}${index ++}.${ext}`)
+        filePath = path.resolve(
+          dirname,
+          (currentName = `${name}${index++}.${ext}`)
+        );
       }
 
-      fs.writeFile(filePath, '', (err) => {
+      fs.writeFile(filePath, "", (err) => {
         if (!err) {
           return resolve({
             fileName: currentName,
             filePath,
             isDirectory: false,
             isFile: true,
-          })
+          });
         }
       });
     });
   }
   return createFile(dirname, fileName);
-})
+});
 
 // 新增文件夹
-ipcMain.handle('file:createDirectory', (_, {parentDir, dirName}) => {
+ipcMain.handle("file:createDirectory", (_, { parentDir, dirName }) => {
   function createDir(parentDir, dirName = "未命名文件夹") {
     return new Promise((resolve) => {
       let index = 1;
-      let dirPath = path.resolve(parentDir, dirName)
-      let currentName = dirName
+      let dirPath = path.resolve(parentDir, dirName);
+      let currentName = dirName;
       // 如果文件存在
       while (fs.existsSync(dirPath)) {
-        dirPath = path.resolve(parentDir, currentName = `${dirName}${index ++}`)
+        dirPath = path.resolve(
+          parentDir,
+          (currentName = `${dirName}${index++}`)
+        );
       }
 
-      fs.mkdir(dirPath, err => {
+      fs.mkdir(dirPath, (err) => {
         if (!err) {
           resolve({
             fileName: currentName,
             filePath: dirPath,
             isDirectory: true,
-            isFile: false
-          })
+            isFile: false,
+          });
         }
-      })
+      });
     });
   }
   return createDir(parentDir, dirName);
-})
+});
 
 // 获取基本文件信息
-ipcMain.handle('file:baseInfo', (_, filePath) => {
-  return new Promise(resolve => {
+ipcMain.handle("file:baseInfo", (_, filePath) => {
+  return new Promise((resolve) => {
     if (!fs.existsSync(filePath)) {
       return resolve({
-        fileName: '',
-        filePath: '',
+        fileName: "",
+        filePath: "",
         isDirectory: false,
-        isFile: false
-      })
+        isFile: false,
+      });
     }
-    const isDirectory = fs.statSync(filePath).isDirectory()
+    const isDirectory = fs.statSync(filePath).isDirectory();
     const info = path.parse(filePath);
     return resolve({
       fileName: info.base,
       filePath: filePath,
       isDirectory,
-      isFile: !isDirectory
-    })
-  })
-})
+      isFile: !isDirectory,
+    });
+  });
+});

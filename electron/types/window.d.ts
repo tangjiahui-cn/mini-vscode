@@ -6,6 +6,12 @@ declare interface Window {
   electron: {
     startDrag: (filePath: string) => void;
   },
+  client: {
+    closeWindow: () => void;
+    maxWindow: () => void;
+    minWindow: () => void;
+    resetWindow: () => void;
+  },
   file: {
     getBaseInfo: (filePath: string) => Promise<any>;
     createDirectory: (parentDir: string, dirName?: string) => Promise<any>;
