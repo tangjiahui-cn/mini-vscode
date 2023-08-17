@@ -14,6 +14,11 @@ exposeWindow({
     },
   },
   file: {
+    // 删除文件/目录
+    deleteFilePath (filePath) {
+      return ipcRenderer.invoke('file:deletePath', filePath)
+    },
+    // 文件重命名
     rename (srcPath, targetPath) {
       return ipcRenderer.invoke('file:rename', {srcPath, targetPath})
     },

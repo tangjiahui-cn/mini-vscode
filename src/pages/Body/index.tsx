@@ -71,6 +71,7 @@ export default function Body() {
           height: "100%",
           background: "transparent",
           color: "rgba(197, 197, 197)",
+          borderColor: '#444444'
         }}
         onChange={(e) => {
           !isEditing && setIsEditing(true)

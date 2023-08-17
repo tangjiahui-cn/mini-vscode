@@ -107,3 +107,29 @@ ipcMain.handle('file:rename', (_, {srcPath, targetPath}) => {
     });
   });
 })
+
+// 删除指定路径文件
+ipcMain.handle('file:deletePath', (_, filePath) => {
+  function deleteFilePathSync (filePath) {
+    if (fs.existsSync(filePath)) {
+      const isFile = fs.statSync(filePath).isFile();
+
+      // 删除文件
+      if (isFile) {
+        fs.unlinkSync(filePath);
+        return;
+      }
+
+      // 删除目录
+      const names = fs.readdirSync(filePath);
+      names.forEach((name) => {
+        deleteFilePathSync(path.resolve(filePath, name));
+      });
+
+      fs.rmdirSync(filePath); // 删除空的文件夹
+    }
+  }
+
+  deleteFilePathSync(filePath)
+  return Promise.resolve(true);
+})

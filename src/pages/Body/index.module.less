@@ -34,4 +34,25 @@
 
 .body {
   flex: 1;
+  resize: none;
+
+  & {
+    &::-webkit-scrollbar {
+      background: transparent;
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+
+    &:hover::-webkit-scrollbar {
+      background: transparent;
+      width: 12px;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+      background: rgb(73, 73, 73);
+    }
+  }
 }

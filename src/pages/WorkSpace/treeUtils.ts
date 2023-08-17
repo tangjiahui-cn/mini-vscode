@@ -2,13 +2,21 @@
  * 操作TreeData的方法
  */
 
+// 删除treeData中的一个节点
+export function deleteTreeNode (treeData: any[] = [], key: string = '') {
+  return treeData.filter(x => {
+    x.children = deleteTreeNode(x?.children, key);
+    return x.key !== key
+  })
+}
+
 // 在treeData中找到指定节点
 export function getTreeNode(treeData: any[] = [], key: string = '') {
   for (let i = 0; i < treeData.length; i ++) {
     const treeNode = treeData[i]
     if (treeNode?.key === key) return treeNode;
     else {
-      const node = getTreeNode(treeNode?.children, treeNode?.key)
+      const node = getTreeNode(treeNode?.children, key)
       if (node) return node;
     }
   }

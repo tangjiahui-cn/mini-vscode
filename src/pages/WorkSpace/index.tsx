@@ -1,5 +1,5 @@
 import styles from "./index.module.less";
-import {Button, Input, Space, Tree} from "antd";
+import {Button, Input, Modal, Space, Tree} from "antd";
 import {
   DownOutlined,
   RightOutlined,
@@ -8,16 +8,17 @@ import {
   FolderOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {appendChildren, getTreeNode} from "./treeUtils";
+import {appendChildren, deleteTreeNode, getTreeNode} from "./treeUtils";
 import { operateActions, useAppDispatch } from "../../store";
 import TreeItem from "./components/TreeItem";
 import EditItem from "./components/EditItem";
-
+import TipDialog from "../../common/TipDialog";
+``
 function getFileNameFormPath(filePath: string): string {
   const lastIndex = filePath.includes("/")
     ? filePath.lastIndexOf("/")
     : filePath.lastIndexOf("\\");
-  return filePath.slice(lastIndex);
+  return filePath.slice(lastIndex + 1);
 }
 
 function joinFilePath (dirPath: string, fileName: string) : string {
@@ -29,7 +30,7 @@ function getDirectoryFromPath (filePath: string): string {
   const lastIndex = filePath.includes("/")
     ? filePath.lastIndexOf("/")
     : filePath.lastIndexOf("\\");
-  return filePath.slice(0, lastIndex + 1);
+  return filePath.slice(0, lastIndex);
 }
 
 export default function WorkSpace() {
@@ -41,9 +42,9 @@ export default function WorkSpace() {
 
   const [fileInfo, setFileInfo] = useState<
     | {
-        filePath: string;
-        fileName: string;
-      }
+    filePath: string;
+    fileName: string;
+  }
     | undefined
   >();
 
@@ -110,12 +111,16 @@ export default function WorkSpace() {
             isFile: x?.isFile
           }
           treeNode._data = x;
+          treeNode._dirPath = getDirectoryFromPath(x?.filePath)
           treeNode._query = false;
           treeNode._isFile = x?.isFile;
           treeNode._title = x?.fileName;
           treeNode.title = createTitle(treeNode);
           treeNode.changeFileName = function (fileName: string) {
+            const newFilePath = joinFilePath(treeNode._dirPath, fileName)
             treeNode.fileName = fileName;
+            treeNode.key = newFilePath;
+            treeNode.filePath = newFilePath;
             treeNode._title = fileName;
             return treeNode;
           }
@@ -131,8 +136,19 @@ export default function WorkSpace() {
 
   function handleOpt (node, option) {
     switch (option.value) {
+      case '3': // 删除
+        TipDialog.open({
+          content: `确认永久删除"${node.fileName}"${node.isDirectory ? '目录' : '文件'}?`,
+          onOk (close) {
+            setTreeData(deleteTreeNode(treeDataRef.current, node.key));
+            window.file.deleteFilePath(node.filePath);
+            close()
+          }
+        })
+        break;
       case '4': // 重命名
         const target = getTreeNode(treeDataRef.current, node.key)
+        if (!target) return;
         target.title = (
           <EditItem
             defaultName={node.fileName}
