@@ -34,18 +34,6 @@ export default function WorkSpace() {
   >();
 
   const isEmpty = useMemo(() => !treeData?.length, [treeData]);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
-
-  function handleCreateNewFile () {
-    appendChildren(treeDataRef.current, selectedNode?.key, [{
-      key: 'xxx',
-      title: 'xxx'
-    }]);
-  }
-
-  function handleCreateNewDirectory () {
-
-  }
 
   function handleSelectFile(filePath: string) {
     window.file.getFileContent(filePath).then((content) => {
@@ -126,15 +114,6 @@ export default function WorkSpace() {
           {isEmpty ? "无打开的文件夹" : fileInfo?.fileName}
         </Space>
         <Space style={{ fontSize: 15 }}>
-          {/*<FileAddOutlined*/}
-          {/*  style={{ fontSize: 13 }}*/}
-          {/*  title={'新增文件'}*/}
-          {/*  onClick={handleCreateNewFile}*/}
-          {/*/>*/}
-          {/*<FolderAddOutlined*/}
-          {/*  title={'新增文件夹'}*/}
-          {/*  onClick={handleCreateNewDirectory}*/}
-          {/*/>*/}
           <FolderOpenOutlined
             title={'打开文件夹'}
             onClick={handleOpenDirectory}
@@ -156,7 +135,6 @@ export default function WorkSpace() {
           loadData={handleLoadTreeData}
           onSelect={([filePath = ""]: string[] = [], {node}) => {
             if (filePath && node?._isFile) {
-              setSelectedNode(node);
               handleSelectFile(filePath);
             }
           }}
