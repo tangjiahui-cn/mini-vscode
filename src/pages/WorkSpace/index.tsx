@@ -213,7 +213,7 @@ export default function WorkSpace() {
       case "3": // 删除
         TipDialog.open({
           content: `确认永久删除"${node.fileName}"${
-            node.isDirectory ? "目录" : "文件"
+            node.isDirectory ? "文件夹" : "文件"
           }?`,
           onOk(close) {
             setTreeData(deleteTreeNode(treeDataRef.current, node.key));
@@ -266,7 +266,7 @@ export default function WorkSpace() {
             onClick={handleCreateFile}
           />
           <FolderAddOutlined
-            title={"新增目录"}
+            title={"新增文件夹"}
             onClick={handleCreateDirectory}
           />
           <FolderOpenOutlined
