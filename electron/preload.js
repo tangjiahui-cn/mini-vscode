@@ -14,6 +14,9 @@ exposeWindow({
     },
   },
   file: {
+    rename (srcPath, targetPath) {
+      return ipcRenderer.invoke('file:rename', {srcPath, targetPath})
+    },
     // 获取根目录文件内容
     getFileContent (filePath) {
       return ipcRenderer.invoke('node:getFileContent', filePath)

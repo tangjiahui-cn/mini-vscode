@@ -7,6 +7,7 @@ declare interface Window {
     startDrag: (filePath: string) => void;
   },
   file: {
+    rename: (srcPath, targetPath) => Promise<boolean>;
     getFileContent: (filePath: string) => Promise<string>;
     chooseLocalDirectory: () => Promise<any>;
     getFiles: (filePath: string) => Promise<any[]>;

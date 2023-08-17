@@ -3,7 +3,7 @@ import {useStateWithRef} from "../../../../hooks/useStateWithRef";
 import {createRoot} from "react-dom/client";
 import styles from './index.module.less';
 
-interface Option { label: string, value: string }
+export interface Option { label: string, value: string }
 
 interface ItemMenuProps {
   options?: Option[];

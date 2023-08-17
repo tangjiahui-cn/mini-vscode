@@ -1,6 +1,6 @@
 import React, {useRef} from "react";
 import styles from "../../index.module.less";
-import ItemMenu from "../ItemMenu";
+import ItemMenu, {Option} from "../ItemMenu";
 
 interface TreeItemProps {
   data: {
@@ -9,16 +9,20 @@ interface TreeItemProps {
     filePath?: string;
     fileName?: string;
   };
+  onChoose?: (value: string, option: Option) => void;
+  children?: any;
 }
 export default function TreeItem (props: TreeItemProps) {
   const {data} = props;
   const ref = useRef();
   return (
     <ItemMenu
+      onChoose={props?.onChoose}
       options={[
         data.isDirectory && {label: '新增文件', value: '1'},
         data.isDirectory && {label: '新增文件夹', value: '2'},
         {label: '删除', value: '3'},
+        {label: '重命名', value: '4'}
       ].filter(Boolean)}
     >
       <div
@@ -30,7 +34,7 @@ export default function TreeItem (props: TreeItemProps) {
           window.electron.startDrag(data?.filePath);
         }}
       >
-        {data.fileName}
+        {props?.children}
       </div>
     </ItemMenu>
   );

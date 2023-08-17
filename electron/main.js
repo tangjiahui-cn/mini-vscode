@@ -98,3 +98,12 @@ ipcMain.handle('file:saveFileToLocal', (_, {filePath, content}) => {
     })
   })
 })
+
+// 文件重命名
+ipcMain.handle('file:rename', (_, {srcPath, targetPath}) => {
+  return new Promise((resolve) => {
+    fs.rename(srcPath, targetPath, (error) => {
+      resolve(!error);
+    });
+  });
+})
