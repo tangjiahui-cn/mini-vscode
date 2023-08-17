@@ -14,6 +14,10 @@ exposeWindow({
     },
   },
   file: {
+    // 创建新文件
+    createFile (dirname = '', fileName = '') {
+      return ipcRenderer.invoke('file:createFile', {dirname, fileName})
+    },
     // 删除文件/目录
     deleteFilePath (filePath) {
       return ipcRenderer.invoke('file:deletePath', filePath)

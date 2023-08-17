@@ -53,7 +53,7 @@ export default function Body() {
   useEffect(() => {
     setIsEditing(false);
     setContent(state.body.currentFile.content || "");
-  }, [state.body.currentFile.content]);
+  }, [state.body.currentFile]);
 
   return state.body.currentFile.fileName ? (
     <div className={styles["page"]}>

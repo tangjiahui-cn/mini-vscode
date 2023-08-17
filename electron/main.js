@@ -133,3 +133,33 @@ ipcMain.handle('file:deletePath', (_, filePath) => {
   deleteFilePathSync(filePath)
   return Promise.resolve(true);
 })
+
+// 新增文件
+ipcMain.handle('file:createFile', (_, {dirname, fileName}) => {
+  function createFile(dirname, fileName) {
+    fileName ||= "未命名文件.txt";
+    return new Promise((resolve) => {
+      let index = 1;
+      let filePath = path.resolve(dirname, fileName)
+      let currentName = fileName;
+      const [name, ext] = fileName.split('.');
+      // 如果文件存在
+      while (fs.existsSync(filePath)) {
+        filePath = path.resolve(dirname, currentName = `${name}${index ++}.${ext}`)
+      }
+
+      fs.writeFile(filePath, '', (err) => {
+        if (!err) {
+          const isDirectory = fs.statSync(filePath).isDirectory();
+          return resolve({
+            fileName: currentName,
+            filePath,
+            isDirectory,
+            isFile: !isDirectory
+          })
+        }
+      });
+    });
+  }
+  return createFile(dirname, fileName);
+})

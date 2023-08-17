@@ -8,7 +8,7 @@ import {
   FolderOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {appendChildren, deleteTreeNode, getTreeNode} from "./treeUtils";
+import {appendChildren, deleteTreeNode, getTreeNode, insertNode} from "./treeUtils";
 import { operateActions, useAppDispatch } from "../../store";
 import TreeItem from "./components/TreeItem";
 import EditItem from "./components/EditItem";
@@ -95,37 +95,39 @@ export default function WorkSpace() {
     )
   }
 
+  function createNode (x: any) {
+    const treeNode: any = {
+      key: x?.filePath,
+      isLeaf: x?.isFile,
+      icon: x.isFile ? <FileTextOutlined /> : (({expanded}) => {
+        return expanded ? <FolderOpenOutlined /> : <FolderOutlined />
+      }),
+      filePath: x?.filePath,
+      fileName: x?.fileName,
+      isDirectory: x?.isDirectory,
+      isFile: x?.isFile
+    }
+    treeNode._data = x;
+    treeNode._dirPath = getDirectoryFromPath(x?.filePath)
+    treeNode._query = false;
+    treeNode._isFile = x?.isFile;
+    treeNode._title = x?.fileName;
+    treeNode.title = createTitle(treeNode);
+    treeNode.changeFileName = function (fileName: string) {
+      const newFilePath = joinFilePath(treeNode._dirPath, fileName)
+      treeNode.fileName = fileName;
+      treeNode.key = newFilePath;
+      treeNode.filePath = newFilePath;
+      treeNode._title = fileName;
+      return treeNode;
+    }
+    return treeNode;
+  }
+
   function getTreeData(filePath: string) {
     return window.file.getFiles(filePath).then((files) => {
       return files
-        .map((x) => {
-          const treeNode: any = {
-            key: x?.filePath,
-            isLeaf: x?.isFile,
-            icon: x.isFile ? <FileTextOutlined /> : (({expanded}) => {
-              return expanded ? <FolderOpenOutlined /> : <FolderOutlined />
-            }),
-            filePath: x?.filePath,
-            fileName: x?.fileName,
-            isDirectory: x?.isDirectory,
-            isFile: x?.isFile
-          }
-          treeNode._data = x;
-          treeNode._dirPath = getDirectoryFromPath(x?.filePath)
-          treeNode._query = false;
-          treeNode._isFile = x?.isFile;
-          treeNode._title = x?.fileName;
-          treeNode.title = createTitle(treeNode);
-          treeNode.changeFileName = function (fileName: string) {
-            const newFilePath = joinFilePath(treeNode._dirPath, fileName)
-            treeNode.fileName = fileName;
-            treeNode.key = newFilePath;
-            treeNode.filePath = newFilePath;
-            treeNode._title = fileName;
-            return treeNode;
-          }
-          return treeNode;
-        })
+        .map(createNode)
         .sort((x) => (x.isLeaf ? 1 : -1));
     });
   }
@@ -136,6 +138,15 @@ export default function WorkSpace() {
 
   function handleOpt (node, option) {
     switch (option.value) {
+      case '1': // 新增文件
+        window.file.createFile(node.isDirectory ? node.filePath : node._dirPath).then(file => {
+          const newNode = createNode(file);
+          insertNode(treeDataRef.current, node.key, newNode)
+          setTreeData([...treeDataRef.current])
+        })
+        break;
+      case '2': // 新增文件夹
+        break;
       case '3': // 删除
         TipDialog.open({
           content: `确认永久删除"${node.fileName}"${node.isDirectory ? '目录' : '文件'}?`,
@@ -191,7 +202,10 @@ export default function WorkSpace() {
         </Space>
       </div>
 
-      <div style={{ display: expand ? "block" : "none" }} className={styles.body}>
+      <div
+        style={{ display: expand ? "block" : "none" }}
+        className={styles.body}
+      >
         {isEmpty && (
           <div style={{ padding: "16px 32px" }}>
             <Button type="primary" block onClick={handleOpenDirectory}>
