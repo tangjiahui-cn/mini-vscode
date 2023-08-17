@@ -3,15 +3,14 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import routes from "./routes";
 import "antd/dist/antd.min.css";
+import AppProvider from './store';
 
 const router = createHashRouter(routes, {
   basename: '/'
 });
 
-console.log(window.location.href, window.location)
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <AppProvider>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </AppProvider>
 );
