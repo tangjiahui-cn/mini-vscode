@@ -24,9 +24,15 @@ export default function ItemMenu (props: ItemMenuProps) {
   function createMenu (e) {
     const div = menuRef.current = document.createElement('div')
 
-    function listenOnce () {
+    function listenOnce (e) {
       window.removeEventListener('mousedown', listenOnce)
       close();
+
+      // 菜单打开情况下再次点击相同菜单项触发
+      const isRightClickAgain = e.target === ref.current && e.which ===3 
+      if (isRightClickAgain) {
+        onMouseDown(e, true) 
+      }
     }
 
     createRoot(div).render(<div
@@ -60,10 +66,10 @@ export default function ItemMenu (props: ItemMenuProps) {
     menuRef.current = null
   }
 
-  function onMouseDown (e) {
-    const isRightMouse = e.nativeEvent.which === 3
+  function onMouseDown (e, immediately?: boolean) {
+    const isRightMouse = (e?.nativeEvent?.which || e?.which) === 3
     if (isRightMouse) {
-      if (visible) {
+      if (visible && !immediately) {
         return;
       }
       createMenu(e);
