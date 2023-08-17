@@ -28,10 +28,10 @@ function createWindow() {
 }
 
 let win;
-let initWindowInfo;
+let lastWindowInfo;
 app.whenReady().then(() => {
   win = createWindow();
-  initWindowInfo = win.getBounds();
+  lastWindowInfo = win.getBounds();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -49,7 +49,9 @@ ipcMain.on("client:closeWindow", () => {
 
 // 客户端最大化
 ipcMain.on("client:maxWindow", () => {
-  win && win.maximize();
+  if (!win) return;
+  lastWindowInfo = win.getBounds();
+  win.maximize();
 });
 
 // 客户端最小化
@@ -59,7 +61,10 @@ ipcMain.on("client:minWindow", () => {
 
 // 重置客户端
 ipcMain.on("client:resetWindow", () => {
-  win && win.setBounds(initWindowInfo, true);
+  if (!win) return;
+  process.platform === "darwin"
+    ? win.setBounds(lastWindowInfo, true)
+    : win.restore();
 });
 
 app.on("window-all-closed", () => {
