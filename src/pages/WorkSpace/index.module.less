@@ -4,23 +4,16 @@
   white-space: nowrap;
 }
 
-.head {
-  display: flex;
-  justify-content: space-between;
-  white-space: nowrap;
-  padding-right: 16px;
-  align-items: center;
-}
-
 .page {
   width: 100%;
   height: 100%;
-  overflow-y: auto;
   padding: 8px 0;
   color: rgba(197, 197, 197);
   font-size: 12px;
   user-select: none;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 
   :global {
     .ant-tree {
@@ -63,12 +56,40 @@
   }
 }
 
+.head {
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+  padding-right: 16px;
+  align-items: center;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    background: transparent;
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  &:hover::-webkit-scrollbar {
+    background: transparent;
+    width: 12px;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: rgb(73, 73, 73);
+  }
+}
+
 .focus {
   border: 1px solid transparent;
   &:focus {
     border: 1px solid rgb(0, 116, 202);
   }
-}
-
-.tree-title {
 }

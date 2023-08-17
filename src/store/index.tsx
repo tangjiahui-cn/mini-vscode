@@ -6,22 +6,25 @@ import {
 } from "react-redux";
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// 编辑器内容
-interface Body {
+interface File {
   fileName: string; // 文件名称
   content: string; // 编辑器内容
   filePath: string; // 文件路径
 }
 
 interface operateState {
-  body: Body;
+  body: {
+    currentFile: File;
+  };
 }
 
 const initialState: operateState = {
 	body: {
-    fileName: '',
-		content: '',
-    filePath: ''
+    currentFile: {
+      fileName: '',
+      content: '',
+      filePath: ''
+    }
 	}
 };
 
@@ -30,11 +33,11 @@ const operateSlice = createSlice({
   initialState,
   reducers: {
     // ======================== 拖拽中变量 =======================
-		setBody (state, action: PayloadAction<Body>) {
+		setBody (state, action: PayloadAction<File>) {
       const o = action.payload;
-			state.body.content = o.content;
-			state.body.fileName = o.fileName;
-      state.body.filePath = o.filePath;
+			state.body.currentFile.content = o.content;
+			state.body.currentFile.fileName = o.fileName;
+      state.body.currentFile.filePath = o.filePath;
 		}
   },
 });

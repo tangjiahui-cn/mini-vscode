@@ -4,6 +4,8 @@ import {
   DownOutlined,
   RightOutlined,
   FolderOpenOutlined,
+  FileAddOutlined,
+  FolderAddOutlined
 } from "@ant-design/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { appendChildren } from "./treeUtils";
@@ -16,9 +18,7 @@ function getFileNameFormPath(filePath: string): string {
   return filePath.slice(lastIndex + 1);
 }
 
-interface IProps {}
-
-export default function WorkSpace(props: IProps) {
+export default function WorkSpace() {
   const dispatch = useAppDispatch();
   const [expand, setExpand] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<any[]>([]);
@@ -34,6 +34,18 @@ export default function WorkSpace(props: IProps) {
   >();
 
   const isEmpty = useMemo(() => !treeData?.length, [treeData]);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+
+  function handleCreateNewFile () {
+    appendChildren(treeDataRef.current, selectedNode?.key, [{
+      key: 'xxx',
+      title: 'xxx'
+    }]);
+  }
+
+  function handleCreateNewDirectory () {
+
+  }
 
   function handleSelectFile(filePath: string) {
     window.file.getFileContent(filePath).then((content) => {
@@ -47,19 +59,21 @@ export default function WorkSpace(props: IProps) {
     });
   }
 
-  function handleOpenDirectory() {
-    window.file.chooseLocalDirectory().then((filePath) => {
-      const fileName = getFileNameFormPath(filePath);
-      loadDirectory(filePath).then(setTreeData);
-      setFileInfo({
-        filePath,
-        fileName,
-      });
+  function loadDirectory (filePath: string) {
+    const fileName = getFileNameFormPath(filePath);
+    getTreeData(filePath).then(setTreeData);
+    setFileInfo({
+      filePath,
+      fileName,
     });
   }
 
+  function handleOpenDirectory() {
+    window.file.chooseLocalDirectory().then(loadDirectory);
+  }
+
   function handleLoadTreeData(treeNode) {
-    return loadDirectory(treeNode.filePath).then((children) => {
+    return getTreeData(treeNode.filePath).then((children) => {
       appendChildren(treeDataRef.current, treeNode.key, children);
       const _treeData = [...treeDataRef.current];
       setTreeData(_treeData);
@@ -67,15 +81,15 @@ export default function WorkSpace(props: IProps) {
     });
   }
 
-  function loadDirectory(filePath: string) {
-    return window.file.getFiles(filePath).then((files: any[] = {}) => {
+  function getTreeData(filePath: string) {
+    return window.file.getFiles(filePath).then((files) => {
       return files
         .map((x) => {
           return {
             _query: false,
+            _isFile: x?.isFile,
             key: x?.filePath,
             isLeaf: x?.isFile,
-            selectable: x?.isFile,
             filePath: x?.filePath,
             title: (
               <div
@@ -96,11 +110,7 @@ export default function WorkSpace(props: IProps) {
   }
 
   useEffect(() => {
-    // loadDirectory("/Users/tangjiahui/Desktop/electron").then(setTreeData);
-    // setFileInfo({
-    //   fileName: "electron",
-    //   filePath: "/Users/tangjiahui/Desktop/electron",
-    // });
+    loadDirectory("/Users/tangjiahui/Desktop/electron")
   }, []);
 
   return (
@@ -115,26 +125,38 @@ export default function WorkSpace(props: IProps) {
           {expand ? <DownOutlined /> : <RightOutlined />}
           {isEmpty ? "无打开的文件夹" : fileInfo?.fileName}
         </Space>
-        <FolderOpenOutlined
-          style={{ fontSize: 15 }}
-          onClick={handleOpenDirectory}
-        />
+        <Space style={{ fontSize: 15 }}>
+          {/*<FileAddOutlined*/}
+          {/*  style={{ fontSize: 13 }}*/}
+          {/*  title={'新增文件'}*/}
+          {/*  onClick={handleCreateNewFile}*/}
+          {/*/>*/}
+          {/*<FolderAddOutlined*/}
+          {/*  title={'新增文件夹'}*/}
+          {/*  onClick={handleCreateNewDirectory}*/}
+          {/*/>*/}
+          <FolderOpenOutlined
+            title={'打开文件夹'}
+            onClick={handleOpenDirectory}
+          />
+        </Space>
       </div>
 
-      <div style={{ display: expand ? "block" : "none" }}>
+      <div style={{ display: expand ? "block" : "none" }} className={styles.body}>
         {isEmpty && (
           <div style={{ padding: "16px 32px" }}>
             <Button type="primary" block onClick={handleOpenDirectory}>
               打开文件夹
-            </Button>
+            </Button>background
           </div>
         )}
         <Tree
           style={{ paddingLeft: 16 }}
           treeData={treeData}
           loadData={handleLoadTreeData}
-          onSelect={([filePath = ""]: string[] = []) => {
-            if (filePath) {
+          onSelect={([filePath = ""]: string[] = [], {node}) => {
+            if (filePath && node?._isFile) {
+              setSelectedNode(node);
               handleSelectFile(filePath);
             }
           }}

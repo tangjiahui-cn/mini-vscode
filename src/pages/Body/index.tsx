@@ -14,11 +14,11 @@ export default function Body() {
   stateRef.current = state;
 
   function handleSave () {
-    const state = stateRef.current
-    if (!state.body.fileName) return;
+    const currentFile = stateRef.current.body.currentFile
+    if (!currentFile.fileName) return;
     setIsEditing(false)
     window.file.saveFileToLocal({
-      filePath: state.body.filePath,
+      filePath: currentFile.filePath,
       content: contentRef.current
     }).then(isSuccess => {
       if (isSuccess) {
@@ -42,14 +42,14 @@ export default function Body() {
 
   useEffect(() => {
     setIsEditing(false);
-    setContent(state.body.content || "");
-  }, [state.body.content]);
+    setContent(state.body.currentFile.content || "");
+  }, [state.body.currentFile.content]);
 
-  return state.body.fileName ? (
+  return state.body.currentFile.fileName ? (
     <div className={styles["page"]}>
       <div className={styles['head']}>
         <Space>
-          {state.body.fileName}
+          {state.body.currentFile.fileName}
           {isEditing && <div className={styles['dot']}/>}
         </Space>
       </div>
