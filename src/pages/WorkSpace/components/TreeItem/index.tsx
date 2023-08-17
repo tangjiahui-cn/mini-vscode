@@ -1,4 +1,3 @@
-import React, {useRef} from "react";
 import styles from "../../index.module.less";
 import ItemMenu, {Option} from "../ItemMenu";
 
@@ -14,7 +13,7 @@ interface TreeItemProps {
 }
 export default function TreeItem (props: TreeItemProps) {
   const {data} = props;
-  const ref = useRef();
+  
   return (
     <ItemMenu
       onChoose={props?.onChoose}
@@ -26,7 +25,6 @@ export default function TreeItem (props: TreeItemProps) {
       ].filter(Boolean)}
     >
       <div
-        ref={ref}
         className={styles["tree-title"]}
         draggable={data.isFile && !data.fileName.startsWith(".")}
         onDragStart={(e) => {
