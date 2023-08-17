@@ -101,7 +101,7 @@ export default function WorkSpace() {
     const node = currentFile;
     if (node?._root || node?._dirPath === rootFile.filePath) {
       // 根目录下添加
-      window.file.createFile(rootFile._filePath).then((file) => {
+      window.file.createFile(rootFile.filePath).then((file) => {
         const targetTreeData = [...treeData];
         targetTreeData.push(createNode(file));
         setTreeData(sortChildren(targetTreeData));
@@ -259,7 +259,7 @@ export default function WorkSpace() {
           {expand ? <DownOutlined /> : <RightOutlined />}
           {isEmpty ? "无打开的文件夹" : fileInfo?.fileName}
         </Space>
-        <Space style={{ fontSize: 15 }}>
+        {!isEmpty && <Space style={{ fontSize: 15 }}>
           <FileAddOutlined
             title={"新增文件"}
             style={{ fontSize: 13 }}
@@ -273,7 +273,7 @@ export default function WorkSpace() {
             title={"打开文件夹"}
             onClick={handleOpenDirectory}
           />
-        </Space>
+        </Space>}
       </div>
 
       <div

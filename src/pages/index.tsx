@@ -6,12 +6,11 @@ import {
   MinusOutlined,
   BorderOutlined,
   CloseOutlined,
-  CompressOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 
 export default function App() {
-  const [isMaxWindow, setIsMaxWindow] = useState(false);
+  const [_, setIsMaxWindow] = useState(false);
 
   function HeadBar() {
     return (
@@ -35,7 +34,7 @@ export default function App() {
               })
             }
           >
-            {isMaxWindow ? <CompressOutlined /> : <BorderOutlined />}
+            <BorderOutlined />
           </div>
           <div
             className={styles["page-head-item"]}
