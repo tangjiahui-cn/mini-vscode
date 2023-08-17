@@ -60,7 +60,7 @@ export default function WorkSpace() {
     | undefined
   >();
 
-  const isEmpty = useMemo(() => !treeData?.length, [treeData]);
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
   function handleSelectFile(filePath: string) {
     window.file.getFileContent(filePath).then((content) => {
@@ -76,6 +76,7 @@ export default function WorkSpace() {
 
   function loadDirectory (filePath: string) {
     window.file.getBaseInfo(filePath).then(fileInfo => {
+      setIsEmpty(false);
       const treeNode = createNode(fileInfo, true);
       setCurrentFile(treeNode);
       getTreeData(filePath).then(setTreeData);
