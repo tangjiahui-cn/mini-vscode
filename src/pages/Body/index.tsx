@@ -5,6 +5,7 @@ import {Input, message, Space} from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import {useDownKeys} from "../../hooks/useDownKeys";
 import {useStateWithRef} from "../../hooks/useStateWithRef";
+import Empty from "./components/Empty";
 
 export default function Body() {
   const [isEditing, setIsEditing] = useState(false);
@@ -68,12 +69,4 @@ export default function Body() {
       />
     </div>
   ) : <Empty />;
-}
-
-function Empty () {
-  return (
-    <div className={styles['empty']}>
-      <Space><PlusOutlined />请选择文件</Space>
-    </div>
-  )
 }

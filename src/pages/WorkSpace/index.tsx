@@ -4,12 +4,11 @@ import {
   DownOutlined,
   RightOutlined,
   FolderOpenOutlined,
-  FileAddOutlined,
-  FolderAddOutlined
 } from "@ant-design/icons";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { appendChildren } from "./treeUtils";
 import { operateActions, useAppDispatch } from "../../store";
+import TreeItem from "./components/TreeItem";
 
 function getFileNameFormPath(filePath: string): string {
   const lastIndex = filePath.includes("/")
@@ -80,16 +79,7 @@ export default function WorkSpace() {
             isLeaf: x?.isFile,
             filePath: x?.filePath,
             title: (
-              <div
-                className={styles["tree-title"]}
-                draggable={x.isFile && !x.fileName.startsWith(".")}
-                onDragStart={(e) => {
-                  e.preventDefault();
-                  window.electron.startDrag(x?.filePath);
-                }}
-              >
-                {x.fileName}
-              </div>
+              <TreeItem data={x}/>
             ),
           };
         })
