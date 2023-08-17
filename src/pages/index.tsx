@@ -1,57 +1,62 @@
-import { Button, Space } from "antd";
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
 import styles from "./index.module.less";
-
-const list = [
-  { id: 1, title: "文件读取、保存", path: "/file" },
-  { id: 2, title: "接口请求", path: "/request" },
-  { id: 3, title: "调用node环境方法", path: "/node" },
-];
+import WorkSpace from "./WorkSpace";
+import Body from "./Body";
+import { Space } from "antd";
+import {
+  MinusOutlined,
+  BorderOutlined,
+  CloseOutlined,
+  CompressOutlined,
+} from "@ant-design/icons";
+import { useState } from "react";
 
 export default function App() {
-  const navigate = useNavigate();
-  const [current, setCurrent] = useState("/");
+  const [isMaxWindow, setIsMaxWindow] = useState(false);
 
-  function handleChange(x) {
-    const path = x?.path || "/";
-    setCurrent(path);
-    navigate(path);
+  function HeadBar() {
+    return (
+      <div className={styles["page-head"]}>
+        <div className={styles["logo"]}>mini-vscode</div>
+        <Space size={0} className={styles["no-drag"]}>
+          <div
+            className={styles["page-head-item"]}
+            onClick={() => window.client.minWindow()}
+          >
+            <MinusOutlined />
+          </div>
+          <div
+            className={styles["page-head-item"]}
+            onClick={() =>
+              setIsMaxWindow((isMaxWindow) => {
+                isMaxWindow
+                  ? window.client.resetWindow()
+                  : window.client.maxWindow();
+                return !isMaxWindow;
+              })
+            }
+          >
+            {isMaxWindow ? <CompressOutlined /> : <BorderOutlined />}
+          </div>
+          <div
+            className={styles["page-head-item"]}
+            onClick={() => window.client.closeWindow()}
+          >
+            <CloseOutlined />
+          </div>
+        </Space>
+      </div>
+    );
   }
-
-  useEffect(() => {
-    handleChange(list?.[0]);
-  }, []);
 
   return (
     <div className={styles["page"]}>
-      <div className={styles["page-url"]}>{location.href}</div>
+      <HeadBar />
       <div className={styles["page-body"]}>
-        <h1>Vite + Electron ({window.versions.chrome})</h1>
-        <h3>一、已实现</h3>
-        <ul>
-          <Space direction="vertical">
-            {list.map((x) => {
-              return (
-                <li key={x.id}>
-                  <Space>
-                    <Button
-                      size="small"
-                      onClick={() => handleChange(x)}
-                      type={x?.path === current ? "primary" : "default"}
-                    >
-                      演示
-                    </Button>
-                    <span>{x.title}</span>
-                  </Space>
-                </li>
-              );
-            })}
-          </Space>
-        </ul>
-        <h3>二、展示区域</h3>
-        <div className={styles["page-display"]}>
-          <Outlet />
+        <div className={styles["page-body-left"]}>
+          <WorkSpace />
+        </div>
+        <div className={styles["page-body-right"]}>
+          <Body />
         </div>
       </div>
     </div>

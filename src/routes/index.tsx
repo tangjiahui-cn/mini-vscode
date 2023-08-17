@@ -7,19 +7,5 @@ export default [
   {
     path: "/",
     element: <App />,
-    children: [
-      {
-        path: '/file',
-        element: <File />
-      },
-      {
-        path: '/request',
-        element: <Request />
-      },
-      {
-        path: '/node',
-        element: <Node />
-      }
-    ]
   },
 ];
