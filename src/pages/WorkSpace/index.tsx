@@ -146,6 +146,11 @@ export default function WorkSpace() {
         })
         break;
       case '2': // 新增文件夹
+        window.file.createDirectory(node.isDirectory ? node.filePath : node._dirPath).then(file => {
+          const newNode = createNode(file);
+          insertNode(treeDataRef.current, node.key, newNode)
+          setTreeData([...treeDataRef.current])
+        })
         break;
       case '3': // 删除
         TipDialog.open({

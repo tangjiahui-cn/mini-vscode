@@ -82,12 +82,17 @@ export function insertNode (treeData: any[] = [], key = '', node: any) {
   for (let i = 0; i < treeData.length; i++) {
     const o: any = treeData[i]
     if (o?.key === key) {
-      if (o.children) o.children.push(node)
+      if (o.children) {
+        o.children.push(node)
+        o.children = o.children.sort((x) => (x.isLeaf ? 1 : -1));
+      }
       else o.children = [node]
       o.isLeaf = false
       return true
     } else {
-      if (insertNode(o?.children, key, node)) return true
+      if (insertNode(o?.children, key, node)) {
+        return true
+      }
     }
   }
   return false

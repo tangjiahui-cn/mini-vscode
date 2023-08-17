@@ -14,6 +14,10 @@ exposeWindow({
     },
   },
   file: {
+    // 创建新的文件夹
+    createDirectory (parentDir, dirName) {
+      return ipcRenderer.invoke('file:createDirectory', {parentDir, dirName})
+    },
     // 创建新文件
     createFile (dirname = '', fileName = '') {
       return ipcRenderer.invoke('file:createFile', {dirname, fileName})

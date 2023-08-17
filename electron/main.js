@@ -150,12 +150,11 @@ ipcMain.handle('file:createFile', (_, {dirname, fileName}) => {
 
       fs.writeFile(filePath, '', (err) => {
         if (!err) {
-          const isDirectory = fs.statSync(filePath).isDirectory();
           return resolve({
             fileName: currentName,
             filePath,
-            isDirectory,
-            isFile: !isDirectory
+            isDirectory: false,
+            isFile: true,
           })
         }
       });
@@ -163,3 +162,31 @@ ipcMain.handle('file:createFile', (_, {dirname, fileName}) => {
   }
   return createFile(dirname, fileName);
 })
+
+// 新增文件夹
+ipcMain.handle('file:createDirectory', (_, {parentDir, dirName}) => {
+  function createDir(parentDir, dirName = "未命名文件夹") {
+    return new Promise((resolve) => {
+      let index = 1;
+      let dirPath = path.resolve(parentDir, dirName)
+      let currentName = dirName
+      // 如果文件存在
+      while (fs.existsSync(dirPath)) {
+        dirPath = path.resolve(parentDir, currentName = `${dirName}${index ++}`)
+      }
+
+      fs.mkdir(dirPath, err => {
+        if (!err) {
+          resolve({
+            fileName: currentName,
+            filePath: dirPath,
+            isDirectory: true,
+            isFile: false
+          })
+        }
+      })
+    });
+  }
+  return createDir(parentDir, dirName);
+})
+
