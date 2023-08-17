@@ -28,8 +28,10 @@ function createWindow() {
 }
 
 let win;
+let initWindowInfo;
 app.whenReady().then(() => {
   win = createWindow();
+  initWindowInfo = win.getBounds();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -55,10 +57,10 @@ ipcMain.on("client:minWindow", () => {
   win && win.minimize();
 });
 
-// 回复客户端大小
+// 重置客户端
 ipcMain.on("client:resetWindow", () => {
-  win && win.restore();
-})
+  win && win.setBounds(initWindowInfo, true);
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
