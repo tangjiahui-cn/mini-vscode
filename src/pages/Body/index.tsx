@@ -1,13 +1,14 @@
-import { useAppSelector } from "../../store";
+import {operateActions, useAppDispatch, useAppSelector} from "../../store";
 import styles from "./index.module.less";
 import {useEffect, useRef, useState} from "react";
 import {Input, message, Space} from "antd";
-import { PlusOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import {useDownKeys} from "../../hooks/useDownKeys";
 import {useStateWithRef} from "../../hooks/useStateWithRef";
 import Empty from "./components/Empty";
 
 export default function Body() {
+  const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent, contentRef] = useStateWithRef<string>("");
   const state = useAppSelector((x) => x.operate);
@@ -41,6 +42,14 @@ export default function Body() {
     }
   ]);
 
+  function handleClose () {
+    dispatch(operateActions.setBody({
+      fileName: '',
+      content: '',
+      filePath: '',
+    }));
+  }
+
   useEffect(() => {
     setIsEditing(false);
     setContent(state.body.currentFile.content || "");
@@ -52,6 +61,7 @@ export default function Body() {
         <Space>
           {state.body.currentFile.fileName}
           {isEditing && <div className={styles['dot']}/>}
+          <CloseOutlined className={styles['del']} onClick={handleClose}/>
         </Space>
       </div>
       <Input.TextArea

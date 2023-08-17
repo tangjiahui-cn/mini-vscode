@@ -4,6 +4,8 @@ import {
   DownOutlined,
   RightOutlined,
   FolderOpenOutlined,
+  FileTextOutlined,
+  FolderOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { appendChildren } from "./treeUtils";
@@ -77,6 +79,9 @@ export default function WorkSpace() {
             _isFile: x?.isFile,
             key: x?.filePath,
             isLeaf: x?.isFile,
+            icon: x.isFile ? <FileTextOutlined /> : (({expanded}) => {
+              return expanded ? <FolderOpenOutlined /> : <FolderOutlined />
+            }),
             filePath: x?.filePath,
             title: (
               <TreeItem data={x}/>
@@ -88,7 +93,7 @@ export default function WorkSpace() {
   }
 
   useEffect(() => {
-    loadDirectory("/Users/tangjiahui/Desktop/electron")
+    loadDirectory("/Users/tangjiahui/Desktop/test-electron")
   }, []);
 
   return (
@@ -120,6 +125,7 @@ export default function WorkSpace() {
           </div>
         )}
         <Tree
+          showIcon
           style={{ paddingLeft: 16 }}
           treeData={treeData}
           loadData={handleLoadTreeData}

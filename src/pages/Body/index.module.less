@@ -13,12 +13,22 @@
   align-items: center;
   height: 32px;
   line-height: 32px;
+  cursor: pointer;
 
   .dot {
     width: 10px;
     height: 10px;
     background: white;
     border-radius: 50%;
+  }
+
+  & .del {
+    opacity: 0;
+    transition: all .1s;
+  }
+
+  &:hover .del {
+    opacity: 1;
   }
 }
 
