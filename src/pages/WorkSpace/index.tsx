@@ -69,12 +69,12 @@ export default function WorkSpace() {
 
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
-  function handleSelectFile(filePath: string) {
-    window.file.getFileContent(filePath).then((content) => {
+  function handleSelectFile(treeNode: any) {
+    window.file.getFileContent(treeNode.filePath).then((content) => {
       dispatch(
         operateActions.setBody({
-          fileName: getFileNameFormPath(filePath),
-          filePath,
+          fileName: treeNode.fileName,
+          filePath: treeNode.filePath,
           content,
         })
       );
@@ -298,7 +298,7 @@ export default function WorkSpace() {
               setCurrentFile(node);
 
               if (filePath && node?._isFile) {
-                handleSelectFile(filePath);
+                handleSelectFile(node);
               }
             }
           }}
