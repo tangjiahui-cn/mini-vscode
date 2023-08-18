@@ -5,6 +5,7 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "esModuleInterop": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -19,6 +20,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src", "electron/types/window.d.ts"],
+  "include": [
+    "src",
+    "electron/.electron/window.d.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
