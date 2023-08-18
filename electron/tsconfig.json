@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonJS",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "./src/preload",
+    "./src/main",
+    "./typing.d.ts"
+  ],
+  "exclude": ["./node_modules"]
+}

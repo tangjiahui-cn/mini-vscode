@@ -51,6 +51,7 @@ function getDirectoryFromPath(filePath: string): string {
 
 export default function WorkSpace() {
   const dispatch = useAppDispatch();
+  const idRef = useRef(0);
   const [expand, setExpand] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<any[]>([]);
   const [rootFile, setRootFile] = useState<any>(undefined);
@@ -99,7 +100,7 @@ export default function WorkSpace() {
 
   function handleCreateFile() {
     const node = currentFile;
-    if (node?._root || node?._dirPath === rootFile.filePath) {
+    if (node?._root || (node.isFile && node?._dirPath === rootFile.filePath)) {
       // 根目录下添加
       window.file.createFile(rootFile.filePath).then((file) => {
         const targetTreeData = [...treeData];
@@ -113,7 +114,7 @@ export default function WorkSpace() {
 
   function handleCreateDirectory() {
     const node = currentFile;
-    if (node?._root || node?._dirPath === rootFile.filePath) {
+    if (node?._root || (node.isFile && node?._dirPath === rootFile.filePath)) {
       window.file
         .createDirectory(node.isDirectory ? node.filePath : node._dirPath)
         .then((file) => {
@@ -148,7 +149,7 @@ export default function WorkSpace() {
 
   function createNode(x: any, root?: boolean) {
     const treeNode: any = {
-      key: x?.filePath,
+      key: `${idRef.current ++}`,
       isLeaf: x?.isFile,
       icon: x.isFile ? (
         <FileTextOutlined />

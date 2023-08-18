@@ -1,6 +1,10 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: {
+    browser: true,
+    es2020: true,
+    "commonjs": true,
+  },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -10,6 +14,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+    "no-undef": 1,
+    '@typescript-eslint/no-var-requires': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },

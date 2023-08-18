@@ -1,12 +1,17 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu } = require("electron");
-const path = require("path");
-const fs = require("fs");
-const root = (_path) => path.join(__dirname, "..", _path);
+import { app, BrowserWindow, ipcMain, dialog, Menu } from "electron";
+import path from 'path';
+import fs from 'fs';
+import pkg from '../../config.json';
 
-// Menu.setApplicationMenu(null);
+const levels = new Array(pkg.outDir.split('/').length).fill('../').join('');
+// 运行时目录
+const runTimeDir = (...args) => path.resolve(__dirname, ...args)
+// 项目根目录（根据运行目录位置进行计算）
+const pjRoot = (...args) => runTimeDir(levels, ...args)
+// electron 根目录
+const root = (...args) => pjRoot('electron', ...args)
 
-// 是否本地开发模式
-const __DEV__ = process.env.mode === "development";
+// Menu.setApplicationMenu(null); // 设为null时不能打开控制台
 const LOCAL_URL = "http://localhost:5173/";
 
 function createWindow() {
@@ -15,14 +20,14 @@ function createWindow() {
     height: 600,
     frame: false,
     webPreferences: {
-      preload: root("electron/preload.js"),
+      preload: runTimeDir('preload.js')
     },
   });
 
   if (__DEV__) {
     win.loadURL(LOCAL_URL);
   } else {
-    win.loadFile(root("dist/index.html"));
+    win.loadFile(pjRoot("dist/index.html"));
   }
   return win;
 }
@@ -76,7 +81,7 @@ app.on("window-all-closed", () => {
 // 拖拽到桌面（取程序文件保存到拖拽位置）
 ipcMain.on("save-local", (event, filePath) => {
   event.sender.startDrag({
-    icon: path.join(__dirname, "iconForDragAndDrop.png"),
+    icon: root("assets/icon.png"),
     file: filePath,
   });
   return true;
@@ -86,7 +91,7 @@ ipcMain.on("save-local", (event, filePath) => {
 ipcMain.handle("node:getFileContent", (event, filePath) => {
   return new Promise((resolve) => {
     fs.readFile(filePath, (_, content) => {
-      return resolve(`${content}`);
+      return resolve(`${content || ''}`);
     });
   });
 });
