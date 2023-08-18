@@ -9,7 +9,7 @@
     "build-runtime": "node electron/build",
     "dev": "cross-env mode=development yarn build-runtime && node ./scripts/server",
     "build": "vite build && yarn build-runtime && electron-forge make",
-    "preview": "yarn build-runtime && vite build && electron ."
+    "preview": "vite build && yarn build-runtime && electron ."
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",

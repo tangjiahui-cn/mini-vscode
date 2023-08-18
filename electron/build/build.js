@@ -21,11 +21,11 @@ const commonConfig = {
       },
     ],
   },
-  // plugin: [
-  //   new webpack.DefinePlugin({
-  //     __XXX__: '11'
-  //   })
-  // ]
+  plugins: [
+    new webpack.DefinePlugin({
+      __DEV__
+    })
+  ]
 }
 
 const preload = webpack(merge(commonConfig, {

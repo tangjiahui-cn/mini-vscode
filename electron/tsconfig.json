@@ -8,7 +8,8 @@
   },
   "include": [
     "./src/preload",
-    "./src/main"
+    "./src/main",
+    "./typing.d.ts"
   ],
   "exclude": ["./node_modules"]
 }

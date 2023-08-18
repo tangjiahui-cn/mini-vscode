@@ -11,12 +11,8 @@ const pjRoot = (...args) => runTimeDir(levels, ...args)
 // electron 根目录
 const root = (...args) => pjRoot('electron', ...args)
 
-// Menu.setApplicationMenu(null); // 设为null不能打开控制台
-// 是否本地开发模式
-const __DEV__ = process.env.mode === "development";
+// Menu.setApplicationMenu(null); // 设为null时不能打开控制台
 const LOCAL_URL = "http://localhost:5173/";
-
-console.log('->', process.env)
 
 function createWindow() {
   const win = new BrowserWindow({
