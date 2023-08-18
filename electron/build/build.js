@@ -1,7 +1,8 @@
 /**
  * 打包 preload.js、main.js
  */
-const {merge, root, runTimeDirPath, webpack} = require('../utils')
+const {merge, root, runTimeDirPath, webpack} = require('../utils');
+const WebpackBar = require('webpackbar');
 const __DEV__ = process.env.mode === 'development'
 
 const commonConfig = {
@@ -24,7 +25,12 @@ const commonConfig = {
   plugins: [
     new webpack.DefinePlugin({
       __DEV__
-    })
+    }),
+    new WebpackBar({
+      color: '#85d',
+      basic: true,
+      profile: true,
+    }),
   ]
 }
 
