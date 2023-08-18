@@ -51,6 +51,7 @@ function getDirectoryFromPath(filePath: string): string {
 
 export default function WorkSpace() {
   const dispatch = useAppDispatch();
+  const idRef = useRef(0);
   const [expand, setExpand] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<any[]>([]);
   const [rootFile, setRootFile] = useState<any>(undefined);
@@ -148,7 +149,7 @@ export default function WorkSpace() {
 
   function createNode(x: any, root?: boolean) {
     const treeNode: any = {
-      key: x?.filePath,
+      key: `${idRef.current ++}`,
       isLeaf: x?.isFile,
       icon: x.isFile ? (
         <FileTextOutlined />
