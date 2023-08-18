@@ -91,7 +91,7 @@ ipcMain.on("save-local", (event, filePath) => {
 ipcMain.handle("node:getFileContent", (event, filePath) => {
   return new Promise((resolve) => {
     fs.readFile(filePath, (_, content) => {
-      return resolve(`${content}`);
+      return resolve(`${content || ''}`);
     });
   });
 });
