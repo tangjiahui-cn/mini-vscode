@@ -99,7 +99,7 @@ export default function WorkSpace() {
 
   function handleCreateFile() {
     const node = currentFile;
-    if (node?._root || node?._dirPath === rootFile.filePath) {
+    if (node?._root || (node.isFile && node?._dirPath === rootFile.filePath)) {
       // 根目录下添加
       window.file.createFile(rootFile.filePath).then((file) => {
         const targetTreeData = [...treeData];
@@ -113,7 +113,7 @@ export default function WorkSpace() {
 
   function handleCreateDirectory() {
     const node = currentFile;
-    if (node?._root || node?._dirPath === rootFile.filePath) {
+    if (node?._root || (node.isFile && node?._dirPath === rootFile.filePath)) {
       window.file
         .createDirectory(node.isDirectory ? node.filePath : node._dirPath)
         .then((file) => {
